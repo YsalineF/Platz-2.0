@@ -2459,6 +2459,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2467,7 +2468,22 @@ __webpack_require__.r(__webpack_exports__);
         start: 0,
         end: 20,
         more: 20
-      }
+      },
+      // connexion websocket
+      connection: "null"
+    };
+  },
+  created: function created() {
+    console.log("Starting connection to websocket server");
+    this.connection = new WebSocket("wss://echo.websocket.org");
+
+    this.connection.onmessage = function (event) {
+      console.log(event);
+    };
+
+    this.connection.onopen = function (event) {
+      console.log(event);
+      console.log("successfully connected to echo websocket server !");
     };
   },
   computed: {
@@ -2522,6 +2538,15 @@ __webpack_require__.r(__webpack_exports__);
     scrollToTop: function scrollToTop() {
       // Inspiration https://stackoverflow.com/questions/50449123/vue-js-scroll-to-top-of-page-for-same-route
       window.scrollTo(0, 0);
+    },
+    // Permet d'envoyer un message via le button "send message"
+    sendMessage: function sendMessage(message) {
+      // affiche dans la console la data "connection"
+      console.log(this.connection); // affiche dans la console l'événement "MessageEvent"
+
+      this.connection.send(message); // ouvre une fenêtre popup avec le message "Successfully connected !"
+
+      alert('Successfully connected to the Websocket server !');
     }
   }
 });
@@ -62600,57 +62625,71 @@ var render = function() {
       _c(
         "div",
         { attrs: { id: "main-container-image" } },
-        _vm._l(_vm.ressources, function(ressource) {
-          return _c("section", { key: ressource.id, staticClass: "work" }, [
-            _c(
-              "figure",
-              { staticClass: "white" },
-              [
-                _c(
-                  "router-link",
-                  {
-                    attrs: {
-                      to: { name: "show", params: { id: ressource.id } }
-                    }
-                  },
-                  [
-                    _c("img", {
+        [
+          _c(
+            "button",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.sendMessage("Hello")
+                }
+              }
+            },
+            [_vm._v("Send message")]
+          ),
+          _vm._v(" "),
+          _vm._l(_vm.ressources, function(ressource) {
+            return _c("section", { key: ressource.id, staticClass: "work" }, [
+              _c(
+                "figure",
+                { staticClass: "white" },
+                [
+                  _c(
+                    "router-link",
+                    {
                       attrs: {
-                        src: "assets/img/" + ressource.image,
-                        alt: ressource.nom
+                        to: { name: "show", params: { id: ressource.id } }
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("dl", [
-                      _c("dt", [_vm._v(_vm._s(ressource.nom))]),
+                    },
+                    [
+                      _c("img", {
+                        attrs: {
+                          src: "assets/img/" + ressource.image,
+                          alt: ressource.nom
+                        }
+                      }),
                       _vm._v(" "),
-                      _c("dd", [_vm._v(_vm._s(ressource.description))])
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { attrs: { id: "wrapper-part-info" } }, [
-                  _c("div", { staticClass: "part-info-image" }, [
-                    _c("img", {
-                      attrs: {
-                        src: "assets/img/" + _vm.categories(ressource).icone,
-                        alt: _vm.categories(ressource).nom,
-                        width: "28",
-                        height: "28"
-                      }
-                    })
-                  ]),
+                      _c("dl", [
+                        _c("dt", [_vm._v(_vm._s(ressource.nom))]),
+                        _vm._v(" "),
+                        _c("dd", [_vm._v(_vm._s(ressource.description))])
+                      ])
+                    ]
+                  ),
                   _vm._v(" "),
-                  _c("div", { attrs: { id: "part-info" } }, [
-                    _vm._v(_vm._s(_vm.categories(ressource).nom))
+                  _c("div", { attrs: { id: "wrapper-part-info" } }, [
+                    _c("div", { staticClass: "part-info-image" }, [
+                      _c("img", {
+                        attrs: {
+                          src: "assets/img/" + _vm.categories(ressource).icone,
+                          alt: _vm.categories(ressource).nom,
+                          width: "28",
+                          height: "28"
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { attrs: { id: "part-info" } }, [
+                      _vm._v(_vm._s(_vm.categories(ressource).nom))
+                    ])
                   ])
-                ])
-              ],
-              1
-            )
-          ])
-        }),
-        0
+                ],
+                1
+              )
+            ])
+          })
+        ],
+        2
       )
     ]),
     _vm._v(" "),
