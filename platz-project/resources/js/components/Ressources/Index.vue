@@ -2,6 +2,7 @@
   <div>
     <div class="container object">
       <div id="main-container-image">
+        <button v-on:click="sendMessage('Hello')">Send message</button>
         <section class="work" v-for="ressource in ressources" :key="ressource.id">
 
           <figure class="white">
@@ -47,9 +48,24 @@ export default {
         start: 0,
         end: 20,
         more: 20
-      }
+      },
+      // connexion websocket
+      connection: "null"
     }
   },
+  created() {
+      console.log("Starting connection to websocket server")
+      this.connection = new WebSocket("wss://echo.websocket.org")
+
+      this.connection.onmessage = function(event) {
+        console.log(event)
+      }
+
+      this.connection.onopen = function(event) {
+        console.log(event)
+        console.log("successfully connected to echo websocket server !")
+      }
+    },
   computed: {
     ressources() {
       let idCat = this.$route.params.id;
@@ -103,6 +119,15 @@ export default {
     scrollToTop() {
       // Inspiration https://stackoverflow.com/questions/50449123/vue-js-scroll-to-top-of-page-for-same-route
       window.scrollTo(0,0)
+    },
+    // Permet d'envoyer un message via le button "send message"
+    sendMessage(message) {
+      // affiche dans la console la data "connection"
+      console.log(this.connection)
+      // affiche dans la console l'événement "MessageEvent"
+      this.connection.send(message)
+      // ouvre une fenêtre popup avec le message "Successfully connected !"
+      alert('Successfully connected to the Websocket server !')
     }
   }
 }
