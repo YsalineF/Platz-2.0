@@ -80,6 +80,7 @@ let getters = {
   },
 
   /* ---------------------- MESSAGES / CONVERSATIONS ------------------*/
+  // Retourne les messages selon l'id des users
   getConversationsById(state) {
     return function(fromId, toId) {
       return state.conversations.filter(conversations => (conversations.from_id == fromId && conversations.to_id == toId) || (conversations.from_id == toId && conversations.to_id == fromId))

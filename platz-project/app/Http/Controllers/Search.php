@@ -12,7 +12,7 @@ class Search extends Controller
      *
      * @param   Request  $request  [$request description]
      *
-     * @return  [type]             [return description]
+     * @return  [type]             [Renvoie la ressource correspondant à la recherche sous la forme json]
      */
     public function search(Request $request) {
         // Inspiration : https://www.php.net/manual/fr/function.preg-split.php

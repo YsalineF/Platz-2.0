@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticationController extends Controller {
 
-  // Fonction qui permet d'enregister un nouveau user
+  /**
+   * Fonction qui permet d'enregister un nouveau user dans la DB
+   *
+   * @param   Request  $request  [$request description]
+   *
+   * @return  [type]             [return description]
+   */
   public function register(Request $request) {
     // Tout d'abord, on valide la requête que le futur user a envoye
     $attr = $request->validate([
@@ -32,7 +38,13 @@ class AuthenticationController extends Controller {
 
   }
 
-  // Fonction qui permet au user de se connecter
+  /**
+   * Fonction qui permet au user de se connecter 
+   *
+   * @param   Request  $request  [$request description]
+   *
+   * @return  [type]             [return description]
+   */
   public function login(Request $request) {
     // Verifie les informations envoyees par le user
     $attr = $request->validate([
@@ -52,7 +64,13 @@ class AuthenticationController extends Controller {
      ]);
   }
 
-  // Fonction qui permet de se deconnecter en invalidant la session
+  /**
+   * Fonction qui permet au user de se déconnecter en invalidant la session
+   *
+   * @param   Request  $request  [$request description]
+   *
+   * @return  [type]             [return description]
+   */
   public function logout(Request $request) {
      $request->session()->invalidate();
   }

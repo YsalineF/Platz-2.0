@@ -39,11 +39,21 @@ export default {
     }
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [return les catégories]
+     */
     categories() {
       return this.$store.getters.getCategories
     }
   },
   methods: {
+    /**
+     * Modifie la valeur de la data "menu"
+     *
+     * @return  {[type]}  [return description]
+     */
     menuVisible() {
       this.menu = !this.menu;
     }

@@ -62,17 +62,24 @@
     methods: {
     },
     computed: {
+      /**
+       * Retourne le user dont on a récupéré l'id via l'URL
+       *
+       * @return  {[type]}  [retourne un user]
+       */
       user() {
-        // Retourne le user dont on récupère l'id dans l'url
         let id =  this.$route.params.id
         return this.$store.getters.getUserById(id)
       },
+      /**
+       * Retourne des ressources (4) écrites par le user
+       *
+       * @return  {[type]}  [retourne des ressources dont l'auteur est le user]
+       */
       moreRessources() {
-        // Retourne les ressources correspondant à ce user  
         let userId = this.user.id
-        console.log(this.$store.getters.getRessourcesByUserId(userId))
+        // console.log(this.$store.getters.getRessourcesByUserId(userId))
         return this.$store.getters.getRessourcesByUserId(userId)
-        
       },
     }
   }

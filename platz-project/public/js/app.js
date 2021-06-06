@@ -1883,6 +1883,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      /**
+       * Instancie un tableau avec ses éléments à null
+      */
       addForm: {
         nom: '',
         description: '',
@@ -1891,19 +1894,33 @@ __webpack_require__.r(__webpack_exports__);
         user: '',
         size: 0
       },
+
+      /**
+       * Instancie "imagePreview" à null et "showPreview" à false
+       */
       imagePreview: null,
       showPreview: false
     };
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [retourne toutes les catégories]
+     */
     categories: function categories() {
-      // Retourne les categories 
       return this.$store.getters.getCategories;
     }
   },
   methods: {
-    // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
-    // https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+    /**
+     * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+     * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+     * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+     * @param   {[type]}  event  [event description]
+     *
+     * @return  {[type]}         [return description]
+     */
     imageChange: function imageChange(event) {
       this.addForm.image = event.target.files[0];
       var reader = new FileReader();
@@ -1918,6 +1935,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+
+    /**
+     * Permet d'ajouter une ressource 
+     * On instancie un objet FormData qu'on rempli avec les éléments du formulaire (qui a été rempli par le user)
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/add"
+     * et on est redirigé vers la page d'accueil
+     * @return  {[type]}  [return description]
+     */
     addResource: function addResource() {
       this.addForm.user = this.$store.state.connectedUser.id; // Inspiration : https://stackoverflow.com/questions/49587831/how-to-append-files-and-data-to-formdata-in-vue-js
 
@@ -1976,7 +2001,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   methods: {
-    // Permet au user de se deconnecter
+    /**
+     * Permet au user de se déconnecter 
+     * On supprime également l'item dans le session storage (voir inspecteur > application > session storage)
+     *
+     * @return  {[type]}  [return description]
+     */
     logout: function logout() {
       var _this = this;
 
@@ -1984,8 +2014,7 @@ __webpack_require__.r(__webpack_exports__);
         user: this.$store.state.connectedUser
       }).then(function (response) {
         _this.$store.dispatch('logoutUser', response.data.user);
-      }); // Supprime l'item dans la session storage (voir inspecteur > application > session storage)
-
+      });
       sessionStorage.clear();
     }
   }
@@ -2044,38 +2073,78 @@ __webpack_require__.r(__webpack_exports__);
   props: ["id"],
   data: function data() {
     return {
+      /**
+       * Instancie à null un tableau et ses éléments
+       */
       messageForm: {
         'from_id': null,
         'to_id': null,
         'content': ""
       },
+
+      /**
+       * Instancie à vide un tableau
+       */
       messages: []
     };
   },
+
+  /**
+     * Permet de broadcast les nouveaux messages et ainsi les render instantanément
+     * 1. Le channel écoute l'événement "MessageSent"
+     * 2. On ajoute les nouveaux messages au tableau "message" (initialiser dans les data)
+     *
+     * @return  {[type]}  [return description]
+     */
   mounted: function mounted() {
     var _this = this;
 
     Echo.channel('conversation').listen('MessageSent', function (event) {
-      _this.messages.push(event.conversation);
+      _this.messages.push(event.conversation); // console.log(this.messages)
 
-      console.log(_this.messages);
     });
   },
   computed: {
+    /**
+     * Retourne le user dont l'id correspond à l'id envoyé dans les props (l'id du user à qui on veut envoyer un message)
+     *
+     * @return  {[type]}  [retourne un user]
+     */
     user: function user() {
       return this.$store.getters.getUserById(this.id);
     },
+
+    /**
+     * Retourne les messages que le user choisi et le user connecté se sont envoyés
+     *
+     * @return  {[type]}  [retourne des messages]
+     */
     conversations: function conversations() {
-      console.log(this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id));
+      // console.log(this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id))
       return this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id);
     }
   },
   methods: {
+    /**
+       * Permet de formater une date
+       *
+       * @param   {[type]}  value  [la date]
+       *
+       * @return  {[type]}         [renvoie la date sous le nouveau format]
+       */
     dateFormat: function dateFormat(value) {
       if (value) {
         return moment__WEBPACK_IMPORTED_MODULE_0___default()(String(value)).format('MMMM Do YYYY, h:mm a');
       }
     },
+
+    /**
+     * Permet d'ajouter un message 
+     * On instancie un objet FormData qu'on rempli avec l'élément du formulaire (qui a été rempli par le user)
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/conversations/add"
+     * et on remet la valeur de l'élément content du tableau à vide
+     * @return  {[type]}  [return description]
+     */
     addMessage: function addMessage() {
       this.messageForm.from_id = this.$store.state.connectedUser.id;
       this.messageForm.to_id = this.id;
@@ -2122,11 +2191,20 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   computed: {
-    // Permet d'avoir la liste des utilisateurs enregistrés sur le site
+    /**
+     * Retourne la liste des users enregistrés sur le site
+     *
+     * @return  {[type]}  [retourne tous les users]
+     */
     users: function users() {
       return this.$store.getters.getUsers;
     },
-    // Permet de filtrer la liste des utilisateurs pour exclure l'utilisateur connecté
+
+    /**
+     * Retourne la liste des users filtrée, c'est-à-dire sans le user connecté
+     *
+     * @return  {[type]}  [retourne la liste des users sans le user connecté]
+     */
     filteredUsers: function filteredUsers() {
       var _this = this;
 
@@ -2191,6 +2269,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      /**
+       * Instancie un tableau avec ses éléments à null
+       */
       editForm: {
         id: null,
         name: "",
@@ -2200,19 +2281,34 @@ __webpack_require__.r(__webpack_exports__);
         linkedin: '',
         image: ''
       },
+
+      /**
+       * Instancie "imagePreview" à null et "showPreview" à false
+      */
       imagePreview: null,
       showPreview: false
     };
   },
   computed: {
+    /**
+     * Retourne le user connecté
+     *
+     * @return  {[type]}  [retourne un user]
+     */
     user: function user() {
-      // Retourne le user connecté
       var id = this.$store.state.connectedUser.id;
       return this.$store.getters.getUserById(id);
     }
   },
   methods: {
-    // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak
+    /**
+     * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+     * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+     * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+     * @param   {[type]}  event  [event description]
+     *
+     * @return  {[type]}         [return description]
+    */
     imageChange: function imageChange(event) {
       this.editForm.image = event.target.files[0];
       var reader = new FileReader();
@@ -2227,6 +2323,20 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+
+    /**
+     * Permet d'éditer les informations du profil d'un user
+     *
+     * @return  {[type]}  [return description]
+     */
+
+    /**
+     * Permet d'éditer les informations d'un user
+     * On instancie un objet FormData qu'on rempli avec les éléments actuels du user (voir "created()")
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/my-profile/edit"
+     * et on est redirigé vers la page profile
+     * @return  {[type]}  [return description]
+    */
     editProfile: function editProfile() {
       var editForm = new FormData();
       editForm.append("id", this.editForm.id);
@@ -2252,6 +2362,12 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.push("/my-profile");
     }
   },
+
+  /**
+   * Remplit le tableau "editForm" (instancier à vide dans les data) avec les éléments actuels du user au chargement de la page
+   *
+   * @return  {[type]}  [return description]
+   */
   created: function created() {
     this.editForm.id = this.$store.state.connectedUser.id;
     this.editForm.name = this.user.name;
@@ -2316,7 +2432,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      // Instancie le tableau editForm avec des éléments null
+      /**
+       * Instancie le tableau "editForm" avec des éléments null
+       */
       editForm: {
         id: null,
         nom: '',
@@ -2325,29 +2443,54 @@ __webpack_require__.r(__webpack_exports__);
         categorie: '',
         user: ''
       },
+
+      /**
+       * Instancie "imagePreview" à null et "showPreview" à false
+       */
       imagePreview: null,
       showPreview: false
     };
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [retourne toutes les catégories]
+     */
     categories: function categories() {
-      // Retourne les categories 
       return this.$store.getters.getCategories;
     },
+
+    /**
+     * Retourne la ressource dont l'id correspond à celle présente dans l'URL
+     *
+     * @return  {[type]}  [retourne une ressource]
+     */
     ressource: function ressource() {
-      // Récupère l'id de la ressource qui se trouve dans l'url
       var id = this.$route.params.id;
       return this.$store.getters.getRessourceById(id);
     },
+
+    /**
+     * Retourne la catégorie de la ressource actuelle
+     *
+     * @return  {[type]}  [retourne la catégorie de la ressource actuelle]
+     */
     categorie: function categorie() {
       return function (ressource) {
-        // Retourne la categorie qui correspond à la ressource actuelle
         return this.$store.getters.getCategoriesByRessourceId(ressource);
       };
     }
   },
   methods: {
-    // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak
+    /**
+     * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+     * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+     * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+     * @param   {[type]}  event  [event description]
+     *
+     * @return  {[type]}         [return description]
+     */
     imageChange: function imageChange(event) {
       this.editForm.image = event.target.files[0];
       var reader = new FileReader();
@@ -2362,8 +2505,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
-    // Permet d'editer la ressource choisie
-    // On instancie un objet FormData qu'on rempli avec les éléments actuels de la ressource (voir created())
+
+    /**
+     * Permet d'éditer la ressource choisie
+     * On instancie un objet FormData qu'on rempli avec les éléments actuels de la ressource (voir "created()")
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/edit"
+     * et on est redirigé vers la page d'accueil
+     * @return  {[type]}  [return description]
+     */
     editRessource: function editRessource() {
       this.editForm.user = this.$store.state.connectedUser.id;
       var editForm = new FormData();
@@ -2377,7 +2526,12 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.push("/");
     }
   },
-  // Rempli le tableau "editForm" avec les éléments actuels de la ressource au chargement de la page
+
+  /**
+   * Remplit le tableau "editForm" (instancier à vide dans les data) avec les éléments actuels de la ressource au chargement de la page
+   *
+   * @return  {[type]}  [return description]
+   */
   created: function created() {
     this.editForm.nom = this.ressource.nom;
     this.editForm.description = this.ressource.description;
@@ -2422,7 +2576,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      // Initialise a vide les elements du formulaire
+      /**
+       * Initialise a vide les elements du formulaire
+       */
       loginForm: {
         email: '',
         password: ''
@@ -2431,19 +2587,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     // Permet au user de se connecter
+
+    /**
+     * Permet au user de se connecter
+     * 1. Mise en place de cookie pour une certaine durée (1 heure) (ligne 42)
+     * 2. Accède à la route pour se connecter via les infos communiquées via le formulaire (ligne 44)
+     * 3. Transforme les data du user connecté en un objet JSON (ligne 49)
+     * 4. Afin de le stocker dans le session storage (voir inspecteur > application > session storage) (ligne 51)
+     * 5. Renvoie vers la route "index" donc vers la page d'accueil (ligne 53)
+     */
     login: function login() {
       var _this = this;
 
-      // Mise en place de cookie pour une certaine durée (ici: 1heure)
       axios.get('sanctum/csrf-cookie').then(function (response) {
-        // Accede a la route pour se connecter via les infos communiquees via le formulaire
         axios.post('api/auth/login', _this.loginForm).then(function (response) {
-          _this.$store.dispatch('loginUser', response.data.user); // Transforme les data du user connecté en un objet JSON
+          _this.$store.dispatch('loginUser', response.data.user);
 
-
-          var connected = JSON.stringify(response.data.user); // Afin de le stocker dans le session storage (voir inspecteur > application > session storage)
-
-          sessionStorage.setItem('connected', connected); // renvoie vers la route "index" donc vers la page d'accueil
+          var connected = JSON.stringify(response.data.user);
+          sessionStorage.setItem('connected', connected);
 
           _this.$router.push({
             name: 'index'
@@ -2520,26 +2681,42 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      /**
+       * Initialise à null id
+       */
       params: {
         id: ''
       }
     };
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [return les catégories]
+     */
     categories: function categories() {
-      // Retourne toutes les categories
       return this.$store.getters.getCategories;
     },
-    // Retourne l'id de la ressource actuelle et permet d'avoir acces au bouton
-    // pour accéder au formulaire d'edit de la ressource
+
+    /**
+     * Retourne l'id de la ressource actuelle, trouvée via l'url, et permet d'avoir accès au bouton pour accèder au formulaire d'édition de la ressource
+     *
+     * @return  {[type]}  [return l'id de la ressource actuelle]
+     */
     ressourceId: function ressourceId() {
       var ressourceId = this.$route.params.id;
       return ressourceId;
     }
   },
   methods: {
-    // Permet de supprimer la ressource sur laquelle on se trouve
-    // la suppression se fait via son id
+    /**
+     * Permet de supprimer la ressource actuelle
+     * La suppression se fait via l'id de la ressource, transmise via la data ressourceId
+     * On utilise la route axios "api/delete" et on est redirigé sur la page d'accueil
+     *
+     * @return  {[type]}  [return description]
+     */
     deleteRessource: function deleteRessource() {
       this.params.id = this.ressourceId;
       axios.post('api/delete', this.params);
@@ -2601,11 +2778,21 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [return les catégories]
+     */
     categories: function categories() {
       return this.$store.getters.getCategories;
     }
   },
   methods: {
+    /**
+     * Modifie la valeur de la data "menu"
+     *
+     * @return  {[type]}  [return description]
+     */
     menuVisible: function menuVisible() {
       this.menu = !this.menu;
     }
@@ -2708,12 +2895,25 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Retourne le user connecté
+     * Récupère l'id du user connecté via le session storage
+     *
+     * @return  {[type]}  [return le user connecté]
+     */
     user: function user() {
       var id = this.$store.state.connectedUser.id;
       return this.$store.getters.getUserById(id);
     }
   },
   methods: {
+    /**
+       * Permet de formater une date
+       *
+       * @param   {[type]}  value  [la date]
+       *
+       * @return  {[type]}         [renvoie la date sous le nouveau format]
+       */
     dateFormat: function dateFormat(value) {
       if (value) {
         return moment__WEBPACK_IMPORTED_MODULE_0___default()(String(value)).format('MMM DD, YYYY');
@@ -2771,19 +2971,27 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     // Permet au user de se register
+
+    /**
+     * Permet au user de se register
+     * 1. Mise en place de cookie pour une certaine durée (1 heure) (ligne 50)
+     * 2. Accède à la route pour s'enregistrer via les infos communiquées via le formulaire (ligne 52)
+     * 3. Transforme les data du user connecté en un objet JSON (ligne 55)
+     * 4. Afin de stocker le user connecté dans le session storage (voir inspecteur > application > session storage) (ligne 57)
+     * 5. Renvoie vers la route "index" donc vers la page d'accueil (ligne 60)
+     * 
+     *
+     * @return  {[type]}  [return description]
+     */
     login: function login() {
       var _this = this;
 
-      // Mise en place de cookie pour une certaine durée (ici: 1heure)
       axios.get('sanctum/csrf-cookie').then(function (response) {
-        // Accede a la route pour s'enregister via les infos communiquees via le formulaire
         axios.post('api/auth/register', _this.registerForm).then(function (response) {
-          _this.$store.dispatch('loginUser', response.data.user); // Transforme les data du user connecté en un objet JSON
+          _this.$store.dispatch('loginUser', response.data.user);
 
-
-          var connected = JSON.stringify(response.data.user); // Afin de le stocker dans le session storage (voir inspecteur > application > session storage)
-
-          sessionStorage.setItem('connected', connected); // renvoie vers la route "index" donc vers la page d'accueil
+          var connected = JSON.stringify(response.data.user);
+          sessionStorage.setItem('connected', connected);
 
           _this.$router.push({
             name: "index"
@@ -2951,6 +3159,14 @@ __webpack_require__.r(__webpack_exports__);
       connection: "null"
     };
   },
+
+  /**
+   * Mise en place d'un simple websocket.
+   * A la création de la page, une connexion au serveur websocket est établie et un message dans le console s'affiche pour confirmer le début de la connexion
+   * et le fait qu'on est bien connecté au serveur websocket
+   *
+   * @return  {[type]}  [return description]
+   */
   created: function created() {
     console.log("Starting connection to websocket server");
     this.connection = new WebSocket("wss://echo.websocket.org");
@@ -2965,19 +3181,31 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Retourne toutes les catégories 
+     *
+     * @return  {[type]}  [retourne des ressoures]
+     */
     ressources: function ressources() {
-      var idCat = this.$route.params.id;
+      // On récupère l'id de la catégorie de l'id dans l'URL (dans le cas où un filtre est appliqué)
+      var idCat = this.$route.params.id; // Si l'id de la catégorie est différent à undefined, cela veut dire qu'un filtre est appliqué
 
       if (typeof idCat !== 'undefined') {
+        // Retourne les ressources qui ont la catégorie concernée par le filtre
         return this.$store.getters.getRessourcesByCategorieId(this.$route.params.id);
-      } // Retourne un certain nombre de ressources (le nombre dépend des params)
+      } // Si aucun filtre est appliqué, retourne un certain nombre de ressources (le nombre dépend des params)
 
 
       return this.$store.getters.getRessources(this.params);
     },
+
+    /**
+     * Retourne la catégorie de la ressource choisie
+     *
+     * @return  {[type]}  [retourne la catégorie de la ressource choisie]
+     */
     categories: function categories() {
       return function (ressource) {
-        // Retourne la catégorie de la ressource choisie
         return this.$store.getters.getCategoriesByRessourceId(ressource);
       };
     }
@@ -3162,22 +3390,48 @@ __webpack_require__.r(__webpack_exports__);
         ressource: '',
         user: ''
       },
+      // Initialise à null un tableau pour les nouveaux commentaires
       newCommentaires: []
     };
   },
+
+  /**
+   * Permet de broadcast les nouveaux commentaires et ainsi les render instantanément
+   * 1. Le channel écoute l'événement "CommentAdded"
+   * 2. On ajoute les nouveaux commentaires au tableau "newCommentaires" (initialiser dans les data)
+   *
+   * @return  {[type]}  [return description]
+   */
   mounted: function mounted() {
     var _this = this;
 
-    Echo.channel('commentaire').listen('CommentAdded', function (event) {
+    Echo.channel('commentaire') // Le channel écoute l'événement "CommentAdded"
+    .listen('CommentAdded', function (event) {
       _this.newCommentaires.push(event.commentaire);
     });
   },
   methods: {
+    /**
+     * Permet de formater une date
+     *
+     * @param   {[type]}  value  [la date]
+     *
+     * @return  {[type]}         [renvoie la date sous le nouveau format]
+     */
     dateFormat: function dateFormat(value) {
       if (value) {
         return moment__WEBPACK_IMPORTED_MODULE_0___default()(String(value)).format('MMM DD, YYYY');
       }
     },
+    // Permet d'ajouter un commentaire
+
+    /**
+     * Permet d'ajouter un commentaire en récupérant l'id de la ressource et l'id du user via le session storage
+     * et le texte est récupéré via l'élément de formulaire
+     * On utilise la route axios "api/commentaires/add" et ensuite le champ de formulaire est remis à null
+     *
+     * @return  {[type]}  [return description]
+     */
     addComment: function addComment() {
       var _this2 = this;
 
@@ -3192,32 +3446,66 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Retourne la ressource selon l'id qui se trouve dans l'URL
+     *
+     * @return  {[type]}  [retourne une ressource dont l'id match celle dans l'URL]
+     */
     ressource: function ressource() {
       // Recuperation de la variable d'URL d'une route du router (ici l'id de la ressource selectionnee)
       var id = this.$route.params.id;
       this.ressourceId = id;
       return this.$store.getters.getRessourceById(id);
     },
+
+    /**
+     * Retourne la catégorie de la ressource actuelle
+     *
+     * @return  {[type]}  [retourne la catégorie de la ressource actuelle]
+     */
     categorie: function categorie() {
       return function (ressource) {
-        // Retourne la catégorie de la ressource choisie
         return this.$store.getters.getCategoriesByRessourceId(ressource);
       };
     },
+
+    /**
+     * Retourne le user de la ressource actuelle, c'est-à-dire l'auteur de la ressource
+     *
+     * @return  {[type]}  [retourne le user de la ressource actuelle]
+     */
     user: function user() {
       return function (ressource) {
-        // Retourne le user de la ressource choisie
         return this.$store.getters.getUserByRessourceId(ressource);
       };
     },
+
+    /**
+     * Retourne un certain nombre de ressources (max 4) qui ont la même catégorie que la ressource actuelle
+     *
+     * @return  {[type]}  [retourne des ressources qui ont la même catégorie que la ressource actuelle]
+     */
     moreRessources: function moreRessources() {
       var categorieId = this.ressource.categorie_id;
       return this.$store.getters.getRessourcesByCategorieId(categorieId);
     },
+
+    /**
+     * Retourne les commentaires de la ressource actuelle
+     * Récupération de l'id de la ressource via l'URL
+     *
+     * @return  {[type]}  [retourne les commentaires de la ressource actuelle]
+     */
     commentaires: function commentaires() {
       var id = this.$route.params.id;
       return this.$store.getters.getCommentairesByRessourceId(id);
     },
+
+    /**
+     * Retourne tous les users
+     *
+     * @return  {[type]}  [retourne tous les users]
+     */
     users: function users() {
       return this.$store.getters.getUsers;
     }
@@ -3297,15 +3585,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {},
   computed: {
+    /**
+     * Retourne le user dont on a récupéré l'id via l'URL
+     *
+     * @return  {[type]}  [retourne un user]
+     */
     user: function user() {
-      // Retourne le user dont on récupère l'id dans l'url
       var id = this.$route.params.id;
       return this.$store.getters.getUserById(id);
     },
+
+    /**
+     * Retourne des ressources (4) écrites par le user
+     *
+     * @return  {[type]}  [retourne des ressources dont l'auteur est le user]
+     */
     moreRessources: function moreRessources() {
-      // Retourne les ressources correspondant à ce user  
-      var userId = this.user.id;
-      console.log(this.$store.getters.getRessourcesByUserId(userId));
+      var userId = this.user.id; // console.log(this.$store.getters.getRessourcesByUserId(userId))
+
       return this.$store.getters.getRessourcesByUserId(userId);
     }
   }
@@ -3715,6 +4012,7 @@ var getters = {
   },
 
   /* ---------------------- MESSAGES / CONVERSATIONS ------------------*/
+  // Retourne les messages selon l'id des users
   getConversationsById: function getConversationsById(state) {
     return function (fromId, toId) {
       return state.conversations.filter(function (conversations) {

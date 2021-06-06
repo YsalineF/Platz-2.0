@@ -7,14 +7,24 @@ use App\Models\Ressource;
 
 class Ressources extends Controller
 {
-    // Permet d'avoir toutes les Ressources sous la forme JSON
+    /**
+     * Fonction qui permet d'avoir toutes les Ressources sous la forme JSON
+     *
+     * @return  [type]  [renvoie les Ressources sous la forme JSON]
+     */
     public function index() {
       return response()->json(Ressource::all());
     }
 
-    // Fonction qui permet d'ajouter une ressource à la db
-    // On crée un nouvel objet de type Ressource et on le "remplit"
-    // avec les éléments du formulaire rempli
+    /**
+     * Fonction qui permet d'ajouter une ressource à la DB
+     * On crée d'un nouvel objet de type Ressource et on le "remplit" avec les éléments du formulaire rempli
+     * En cas de succès, envoi d'un statut 200 et d'un message confirmant l'envoi de la ressource dans le Network (Inspecteur)
+     *
+     * @param   Request  $request  [$request description]
+     *
+     * @return  [type]             [renvoie un JSON content un statut (200) et un message confirmant l'ajout de la ressource]
+     */
     public function add(Request $request) {
       $ressource = new Ressource;
       $ressource->nom = $request->nom;
@@ -38,12 +48,19 @@ class Ressources extends Controller
       ]);
     }
 
-    //Fonction qui permet d'éditer une ressource en modifiant les éléments de la db avec les nouveaux éléments
-    // et qui permet le traitement d'une image afin que l'image en question se retrouve dans le dossier "assets/img"
+    /**
+     * Fonction qui permet d'éditer une ressource en modifiant les éléments de la db avec les nouveaux éléments
+     * et qui permet le traitement d'une image afin que l'image en question se retrouve dans le dossier "assets/img"
+     *
+     * @param   Request  $request  [$request description]
+     *
+     * @return  [type]             [return description]
+     */
     public function edit(Request $request) {
       $ressource = Ressource::find($request->id);
       $ressource->nom = $request->nom;
 
+      // Traitement de l'image
       if ($request->file('image')) {
         $image = $request->file('image');
         $imageRessource = $image->getClientOriginalName();
@@ -57,7 +74,13 @@ class Ressources extends Controller
       $ressource->save();
     }
 
-    //Fonction qui permet de supprimer une ressource
+    /**
+     * Fonction qui permet de supprimer une ressource
+     *
+     * @param   Request  $request  [$request description]
+     *
+     * @return  [type]             [return description]
+     */
     public function delete(Request $request) {
       $ressource = Ressource::find($request->id);
       $ressource->delete();

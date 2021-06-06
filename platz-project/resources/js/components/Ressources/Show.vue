@@ -118,21 +118,46 @@
           ressource: '',
           user: ''
         },
+        // Initialise à null un tableau pour les nouveaux commentaires
         newCommentaires: []
       }
     },
+    
+    /**
+     * Permet de broadcast les nouveaux commentaires et ainsi les render instantanément
+     * 1. Le channel écoute l'événement "CommentAdded"
+     * 2. On ajoute les nouveaux commentaires au tableau "newCommentaires" (initialiser dans les data)
+     *
+     * @return  {[type]}  [return description]
+     */
     mounted() {
       Echo.channel('commentaire')
+      // Le channel écoute l'événement "CommentAdded"
         .listen('CommentAdded', (event) => {
           this.newCommentaires.push(event.commentaire)
         })
     },
     methods: {
+      /**
+       * Permet de formater une date
+       *
+       * @param   {[type]}  value  [la date]
+       *
+       * @return  {[type]}         [renvoie la date sous le nouveau format]
+       */
       dateFormat(value) {
         if(value) {
           return moment(String(value)).format('MMM DD, YYYY')
         }
       },
+      // Permet d'ajouter un commentaire
+      /**
+       * Permet d'ajouter un commentaire en récupérant l'id de la ressource et l'id du user via le session storage
+       * et le texte est récupéré via l'élément de formulaire
+       * On utilise la route axios "api/commentaires/add" et ensuite le champ de formulaire est remis à null
+       *
+       * @return  {[type]}  [return description]
+       */
       addComment() {
         this.addCommentForm.ressource = this.ressource.id
         this.addCommentForm.user = this.$store.state.connectedUser.id
@@ -145,36 +170,63 @@
       }
     },
     computed: {
+      /**
+       * Retourne la ressource selon l'id qui se trouve dans l'URL
+       *
+       * @return  {[type]}  [retourne une ressource dont l'id match celle dans l'URL]
+       */
       ressource() {
         // Recuperation de la variable d'URL d'une route du router (ici l'id de la ressource selectionnee)
         let id = this.$route.params.id;
         this.ressourceId = id;
         return this.$store.getters.getRessourceById(id);
       },
+      /**
+       * Retourne la catégorie de la ressource actuelle
+       *
+       * @return  {[type]}  [retourne la catégorie de la ressource actuelle]
+       */
       categorie() {
         return function(ressource) {
-          // Retourne la catégorie de la ressource choisie
           return this.$store.getters.getCategoriesByRessourceId(ressource)
         }
       },
+      /**
+       * Retourne le user de la ressource actuelle, c'est-à-dire l'auteur de la ressource
+       *
+       * @return  {[type]}  [retourne le user de la ressource actuelle]
+       */
       user() {
         return function(ressource) {
-          // Retourne le user de la ressource choisie
           return this.$store.getters.getUserByRessourceId(ressource)
         }
       },
+      /**
+       * Retourne un certain nombre de ressources (max 4) qui ont la même catégorie que la ressource actuelle
+       *
+       * @return  {[type]}  [retourne des ressources qui ont la même catégorie que la ressource actuelle]
+       */
       moreRessources() {
         let categorieId = this.ressource.categorie_id
         return this.$store.getters.getRessourcesByCategorieId(categorieId)
       },
-
+      /**
+       * Retourne les commentaires de la ressource actuelle
+       * Récupération de l'id de la ressource via l'URL
+       *
+       * @return  {[type]}  [retourne les commentaires de la ressource actuelle]
+       */
       commentaires() {
         let id = this.$route.params.id;
         return this.$store.getters.getCommentairesByRessourceId(id);
-
       },
+      /**
+       * Retourne tous les users
+       *
+       * @return  {[type]}  [retourne tous les users]
+       */
       users() {
-          return this.$store.getters.getUsers;
+        return this.$store.getters.getUsers;
       }
     }
   }

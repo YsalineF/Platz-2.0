@@ -28,13 +28,17 @@
 <script>
 export default {
   methods: {
-    // Permet au user de se deconnecter
+    /**
+     * Permet au user de se déconnecter 
+     * On supprime également l'item dans le session storage (voir inspecteur > application > session storage)
+     *
+     * @return  {[type]}  [return description]
+     */
     logout() {
       axios.post('api/logout', {user: this.$store.state.connectedUser})
             .then(response => {
               this.$store.dispatch('logoutUser', response.data.user)
             })
-      // Supprime l'item dans la session storage (voir inspecteur > application > session storage)
       sessionStorage.clear()
     }
   }

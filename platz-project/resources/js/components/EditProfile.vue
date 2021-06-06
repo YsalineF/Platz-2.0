@@ -40,6 +40,9 @@
 export default {
     data() {
         return {
+            /**
+             * Instancie un tableau avec ses éléments à null
+             */
             editForm: {
                 id: null,
                 name: "",
@@ -49,19 +52,33 @@ export default {
                 linkedin: '',
                 image: ''
             },
+            /**
+             * Instancie "imagePreview" à null et "showPreview" à false
+            */
             imagePreview: null,
             showPreview: false,
         }
     },
     computed: {
+        /**
+         * Retourne le user connecté
+         *
+         * @return  {[type]}  [retourne un user]
+         */
         user() {
-            // Retourne le user connecté
             let id = this.$store.state.connectedUser.id
             return this.$store.getters.getUserById(id)
         }
     },
     methods: {
-        // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak
+        /**
+         * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+         * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+         * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+         * @param   {[type]}  event  [event description]
+         *
+         * @return  {[type]}         [return description]
+        */
         imageChange(event){
             this.editForm.image = event.target.files[0];
 
@@ -76,6 +93,18 @@ export default {
                 }
             }
         },
+        /**
+         * Permet d'éditer les informations du profil d'un user
+         *
+         * @return  {[type]}  [return description]
+         */
+        /**
+         * Permet d'éditer les informations d'un user
+         * On instancie un objet FormData qu'on rempli avec les éléments actuels du user (voir "created()")
+         * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/my-profile/edit"
+         * et on est redirigé vers la page profile
+         * @return  {[type]}  [return description]
+        */
         editProfile() {
             let editForm = new FormData();
             editForm.append("id", this.editForm.id)
@@ -101,6 +130,11 @@ export default {
             this.$router.push("/my-profile")
         }
     },
+    /**
+     * Remplit le tableau "editForm" (instancier à vide dans les data) avec les éléments actuels du user au chargement de la page
+     *
+     * @return  {[type]}  [return description]
+     */
     created() {
         this.editForm.id = this.$store.state.connectedUser.id
         this.editForm.name = this.user.name
