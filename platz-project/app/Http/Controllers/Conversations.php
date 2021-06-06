@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Conversation;
+use App\Events\MessageSent;
 
 class Conversations extends Controller
 {
@@ -28,6 +29,8 @@ class Conversations extends Controller
       $conversation->content = $request->content;
 
       $conversation->save();
+
+      broadcast(new MessageSent($conversation));
 
       return response()->json([
         'statut' => 200,

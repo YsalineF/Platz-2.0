@@ -15,6 +15,12 @@
             <p v-if="message.from_id === user.id" class="message-date">{{ dateFormat(message.created_at) }}</p>
             <p v-else class="message-date message-from-connected-user-date">{{ dateFormat(message.created_at) }}</p>
           </div>
+          <div v-for="message in messages" :key="message.id">
+            <li v-if="message.from_id === user.id" class="message">{{ message.content }}</li>
+            <li v-else class="message message-from-connected-user">{{ message.content }}</li>
+            <p v-if="message.from_id === user.id" class="message-date">{{ dateFormat(message.created_at) }}</p>
+            <p v-else class="message-date message-from-connected-user-date">{{ dateFormat(message.created_at) }}</p>
+          </div>
         </ul>
           <form action="" class="form-message" @submit.prevent="addMessage">
             <input class="input-message" type="text" name="text" v-model="messageForm.content" placeholder="Type your message here">
@@ -36,8 +42,16 @@ export default {
         'from_id': null,
         'to_id': null,
         'content': ""
-      }
+      },
+      messages: []
     }
+  },
+  mounted() {
+    Echo.channel('conversation')
+      .listen('MessageSent', (event) => {
+        this.messages.push(event.conversation)
+        console.log(this.messages)
+      })
   },
   computed: {
     user() {
