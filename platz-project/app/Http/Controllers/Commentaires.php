@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Commentaire;
+use App\Events\CommentAdded;
 
 class Commentaires extends Controller
 {
@@ -20,5 +21,13 @@ class Commentaires extends Controller
     $commentaire->ressource_id = $request->ressource;
     $commentaire->updated_at = null;
     $commentaire->save();
+
+    broadcast(new CommentAdded($commentaire));
+
+    return response()->json([
+      'statut' => 200,
+      'message' => "Ajout commentaire réussi"
+    ]);
+
   }
 }

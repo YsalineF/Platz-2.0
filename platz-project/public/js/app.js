@@ -3139,6 +3139,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -3150,8 +3161,16 @@ __webpack_require__.r(__webpack_exports__);
         comment: '',
         ressource: '',
         user: ''
-      }
+      },
+      newCommentaires: []
     };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    Echo.channel('commentaire').listen('CommentAdded', function (event) {
+      _this.newCommentaires.push(event.commentaire);
+    });
   },
   methods: {
     dateFormat: function dateFormat(value) {
@@ -3160,15 +3179,15 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     addComment: function addComment() {
-      var _this = this;
+      var _this2 = this;
 
       this.addCommentForm.ressource = this.ressource.id;
       this.addCommentForm.user = this.$store.state.connectedUser.id;
       axios.post('api/commentaires/add', this.addCommentForm).then(function (x) {
-        _this.$store.dispatch('addComment', x.data); // On clear le champ visible du formulaire
+        _this2.$store.dispatch('addComment', x.data); // On clear le champ visible du formulaire
 
 
-        _this.addCommentForm.comment = "";
+        _this2.addCommentForm.comment = "";
       });
     }
   },
@@ -71142,12 +71161,57 @@ var render = function() {
               { key: commentaire.id, staticClass: "post-reply" },
               [
                 _c("div", { staticClass: "image-reply-post" }, [
-                  _c("img", {
-                    attrs: {
-                      src: "assets/img/" + _vm.user(commentaire).avatar,
-                      alt: _vm.user(commentaire).name
-                    }
-                  })
+                  _vm.user(commentaire).image
+                    ? _c("img", {
+                        attrs: {
+                          src: "assets/img/" + _vm.user(commentaire).image,
+                          alt: _vm.user(commentaire).name
+                        }
+                      })
+                    : _c("img", {
+                        attrs: {
+                          src: "assets/img/avatar.png",
+                          alt: _vm.user(commentaire).name
+                        }
+                      })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "name-reply-post" }, [
+                  _c("span", {}, [
+                    _vm._v(
+                      "\n               " +
+                        _vm._s(_vm.user(commentaire).name) +
+                        "\n            "
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-reply-post" }, [
+                  _vm._v(_vm._s(commentaire.content))
+                ])
+              ]
+            )
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.newCommentaires, function(commentaire) {
+            return _c(
+              "div",
+              { key: commentaire.id, staticClass: "post-reply" },
+              [
+                _c("div", { staticClass: "image-reply-post" }, [
+                  _vm.user(commentaire).image
+                    ? _c("img", {
+                        attrs: {
+                          src: "assets/img/" + _vm.user(commentaire).image,
+                          alt: _vm.user(commentaire).name
+                        }
+                      })
+                    : _c("img", {
+                        attrs: {
+                          src: "assets/img/avatar.png",
+                          alt: _vm.user(commentaire).name
+                        }
+                      })
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "name-reply-post" }, [
