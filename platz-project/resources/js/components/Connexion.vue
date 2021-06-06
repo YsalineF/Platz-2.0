@@ -1,6 +1,9 @@
 <template>
   <div>
     <template v-if="$store.state.connectedUser">
+      <button class="button-myprofile" type="button" name="myprofile">
+       <router-link to="/my-profile">My profile</router-link>
+     </button>
       <button class="button-logout" type="button" name="button" @click="logout">
        Logout
      </button>
@@ -40,7 +43,7 @@ export default {
   margin-right: 65px;
   cursor: pointer;
 }
-.button-login, .button-register, .button-logout {
+.button-login, .button-register, .button-logout, .button-myprofile {
   display: block;
   font-family: Helvetica, sans-serif;
   float: right;
@@ -51,7 +54,7 @@ export default {
   border: none;
   border-radius: 5px;
 }
-.button-login {
+.button-login, .button-myprofile {
   margin-right: 65px;
 }
 .button-register {
