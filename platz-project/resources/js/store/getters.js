@@ -44,13 +44,16 @@ let getters = {
   },
 
   /* ----------------------- USERS ----------------------- */
+  // Retourne tous les users
+  getUsers(state) {
+    return state.users
+  },
   // Retourne le user en fonction de l'élément id de la ressource
   getUserByRessourceId(state) {
     return function(data) {
       return state.users.find(user => user.id === data.user_id)
     }
   },
-
   // Retoure le user selon l'élément id du user
   getUserById(state) {
     return function(id) {
@@ -73,6 +76,13 @@ let getters = {
   getCommentairesByRessourceId(state) {
     return function (id){
       return state.commentaires.filter(commentaires => commentaires.ressource.id == id);
+    }
+  },
+
+  /* ---------------------- MESSAGES / CONVERSATIONS ------------------*/
+  getConversationsById(state) {
+    return function(fromId, toId) {
+      return state.conversations.filter(conversations => (conversations.from_id == fromId && conversations.to_id == toId) || (conversations.from_id == toId && conversations.to_id == fromId))
     }
   }
 

@@ -21,6 +21,14 @@ let mutations = {
   },
   ADD_COMMENT(state, data) {
     state.commentaires.push(data);
+  },
+  SET_CONVERSATIONS(state, data) {
+    state.conversations = data;
+  },
+  ADD_MESSAGE(state, data) {
+    console.log(state)
+    console.log(data)
+    state.conversations.push(data);
   }
 }
 

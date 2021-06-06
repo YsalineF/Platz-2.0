@@ -8,6 +8,7 @@ use App\Http\Controllers\Users;
 use App\Http\Controllers\Commentaires;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Search;
+use App\Http\Controllers\Conversations;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,4 +67,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
   Route::post('/commentaires/add', [Commentaires::class, 'add']);
   // Edition du pseudo d'un utilisateur connecté
   Route::post('/my-profile/edit', [Users::class, 'edit']);
+  // Conversations (système de messagerie)
+  // CTRL: Conversations
+  Route::get('/conversations', [Conversations::class, 'index']);
+  // Ajout d'un message à la conversation (système de messagerie)
+  Route::post('/conversations/add', [Conversations::class, 'addMessage']);
+  // Route::resource('/conversations', Conversations::class)->except(['show', 'create', 'edit']);
 });
