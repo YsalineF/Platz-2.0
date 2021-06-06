@@ -4,17 +4,13 @@
     <div id="main-container-image">
 
       <div class="title-item">
-        <div>
-          <img class="title-icone" :src="`assets/img/${categorie(ressource).icone}`" :alt="categorie(ressource).nom">
-        </div>
-        <div class="title-text">{{ ressource.nom }}</div>
-        <div class="title-text-2">{{ dateFormat(ressource.created_at) }} by <router-link :to="`/users/${user(ressource).id}`"> {{ user(ressource).name }} </router-link></div>
+        <div class="title-text">{{ user.name }}'s Profile</div>
       </div>
 
 
       <div class="work">
         <figure class="white">
-          <img :src="`assets/img/${ressource.image}`" :alt="ressource.nom" />
+          <img :src="`assets/img/${user.image}`" :alt="user.name" />
 
         </figure>
 
@@ -22,27 +18,24 @@
 
 
           <div class="wrapper-file">
-            <div class="icon-file"><img :src="`assets/img/${categorie(ressource).icone}`" :alt="categorie(ressource).nom" width="21" height="21"/></div>
-            <div class="text-file">{{ categorie(ressource).nom }}</div>
+            <div class="icon-file"><i class="fab fa-facebook"></i></div>
+            <div class="text-file" v-if="user.facebook"><a :href="user.facebook">Facebook</a></div>
+            <div class="text-file" v-else><div>None</div></div>
           </div>
 
-          <div class="wrapper-weight">
-            <div class="icon-weight"><img src="assets/img/icon-weight.svg" alt="" width="20" height="23"/></div>
-            <div class="text-weight">{{ ressource.size }} Mo</div>
+          <div class="wrapper-file">
+            <div class="icon-file"><i class="fab fa-linkedin"></i></div>
+            <div class="text-file" v-if="user.linkedin"><a :href="user.linkedin">Linkedin</a></div>
+            <div class="text-file" v-else><div>None</div></div>
           </div>
 
           <div class="wrapper-desc">
             <div class="icon-desc"><img src="assets/img/icon-desc.svg" alt="" width="24" height="24"/></div>
-            <div class="text-desc">{{ ressource.description }}</div>
-          </div>
-
-          <div class="wrapper-download">
-            <div class="icon-download"><img src="assets/img/icon-download.svg" alt="" width="19" height="26"/></div>
-            <div class="text-download"><a href="#"><b>Download</b></a></div>
+            <div class="text-desc">{{ user.description }}</div>
           </div>
 
           <div class="wrapper-morefrom">
-            <div class="text-morefrom">More from {{ categorie(ressource).nom }}</div>
+            <div class="text-morefrom">More from {{ user.name }}</div>
             <div class="image-morefrom">
               <router-link v-for="(ressource,index) in moreRessources" :key="ressource.id" :to="{ name: 'ressourceShow', params: {id: ressource.id} }">
                 <div :class="`image-morefrom-${ Number(index) + 1 }`">
@@ -53,111 +46,34 @@
           </div>
 
         </div>
-
-        <div class="post-reply">
-          <div id="title-post-send">
-            <hr/><h2>Your comments</h2>
-          </div>
-        </div>
-        <!-- {{commentaires}} -->
-        <div class="post-reply" v-for="commentaire in commentaires" :key="commentaire.id">
-            <div class="image-reply-post">
-              <img :src="`assets/img/${user(commentaire).avatar}`" :alt="user(commentaire).name" />
-            </div>
-
-            <div class="name-reply-post">
-              <span class="">
-                 {{ user(commentaire).name }}
-              </span>
-            </div>
-
-
-            <div class="text-reply-post">{{ commentaire.content }}</div>
-        </div>
-
-        <div class="post-send" v-if="$store.state.connectedUser">
-          <div id="main-post-send">
-            <div id="title-post-send">Add your comment</div>
-            <form id="contact" @submit.prevent="addComment">
-              <fieldset>
-                <p>
-                  <textarea v-model="addCommentForm.comment" id="message" name="message" maxlength="500" placeholder="Votre Message" tabindex="5" cols="30" rows="4" required></textarea>
-                </p>
-              </fieldset>
-              <div style="text-align:center;"><input type="submit" name="envoi" value="Envoyer" /></div>
-            </form>
-          </div>
-        </div>
+        
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import moment from 'moment'
 
   export default {
     data() {
       return {
-        // Initialise à null l'id de la ressource
-        ressourceId: null,
-        // Initialise à null les éléments du formulaire d'ajout d'un commentaire
-        addCommentForm: {
-          comment: '',
-          ressource: '',
-          user: ''
-        }
       }
     },
     methods: {
-      dateFormat(value) {
-        if(value) {
-          return moment(String(value)).format('MMM DD, YYYY')
-        }
-      },
-      addComment() {
-        this.addCommentForm.ressource = this.ressource.id
-        this.addCommentForm.user = this.$store.state.connectedUser.id
-        axios.post('api/commentaires/add', this.addCommentForm)
-              .then(x => {
-                this.$store.dispatch('addComment', x.data)
-                // On clear le champ visible du formulaire
-                this.addCommentForm.comment = ""
-              })
-      }
     },
     computed: {
-      ressource() {
-        // Recuperation de la variable d'URL d'une route du router (ici l'id de la ressource selectionnee)
-        let id = this.$route.params.id;
-        this.ressourceId = id;
-        return this.$store.getters.getRessourceById(id);
-      },
-      categorie() {
-        return function(ressource) {
-          // Retourne la catégorie de la ressource choisie
-          return this.$store.getters.getCategoriesByRessourceId(ressource)
-        }
-      },
       user() {
-        return function(ressource) {
-          // Retourne le user de la ressource choisie
-          return this.$store.getters.getUserByRessourceId(ressource)
-        }
+        // Retourne le user dont on récupère l'id dans l'url
+        let id =  this.$route.params.id
+        return this.$store.getters.getUserById(id)
       },
       moreRessources() {
-        let categorieId = this.ressource.categorie_id
-        return this.$store.getters.getRessourcesByCategorieId(categorieId)
+        // Retourne les ressources correspondant à ce user  
+        let userId = this.user.id
+        console.log(this.$store.getters.getRessourcesByUserId(userId))
+        return this.$store.getters.getRessourcesByUserId(userId)
+        
       },
-
-      commentaires() {
-        let id = this.$route.params.id;
-        return this.$store.getters.getCommentairesByRessourceId(id);
-
-      },
-      users() {
-          return this.$store.getters.getUsers;
-      }
     }
   }
 </script>
@@ -173,6 +89,10 @@
   /*----------------------------*/
   /* MAIN DIV WITH IMAGE */
   /*----------------------------*/
+
+  .container {
+    margin-bottom: 320px;
+  }
 
   #main-container-image {
     float:left;
@@ -288,16 +208,6 @@
   	margin-top:10px;
   }
 
-  .text-download a{
-  	color:#A1A1A1;
-  	transition: all 0.2s ease-in-out;
-      -webkit-transition: all 0.2s ease-in-out;
-      -moz-transition: all 0.2s ease-in-out;
-      -o-transition: all 0.2s ease-in-out;
-  }
-
-  .text-download a:hover{color:#666;}
-
   .text-morefrom{
   	float:left;
   	text-align:left;
@@ -392,34 +302,6 @@
   	border-bottom:solid #E9E9E9 1px;
   	padding:20px;
   	margin-top:-20px;
-  }
-
-  .post-send{
-  	float:left;
-  	width:60%;
-  	margin-left:7.5%;
-  	height:auto;
-  	margin-bottom:25px;
-  }
-
-  #main-post-send{
-  	float:left;
-  	width:calc(90% - 160px);
-  	margin-left:95px;
-  	height:auto;
-  	margin-top:0px;
-  }
-
-  #title-post-send{
-  	font-family: Helvetica, sans-serif;
-  	-webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      font-size: 16px;
-  	font-weight:600;
-  	color:#686868;
-  	line-height:65px;
-  	height:65px;
-  	position:relative;
   }
 
   textarea {

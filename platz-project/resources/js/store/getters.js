@@ -23,6 +23,13 @@ let getters = {
       return ressources
     }
   },
+  // Retourne un certain nombre de ressources en fonction de l'élément user_id de la ressource
+  getRessourcesByUserId(state) {
+    return function(data) {
+      let ressources = {...state.ressources.filter(ressource => ressource.user_id === data).slice(0,4)}
+      return ressources
+    }
+  },
 
   /* ----------------------- CATEGORIES ----------------------- */
   // Retourne toutes les catégories

@@ -6,7 +6,7 @@
         <section class="work" v-for="ressource in ressources" :key="ressource.id">
 
           <figure class="white">
-            <router-link :to="{name: 'show', params: { id: ressource.id }}">
+            <router-link :to="{name: 'ressourceShow', params: { id: ressource.id }}">
               <img :src="`assets/img/${ressource.image}`" :alt="ressource.nom" />
               <dl>
                 <dt>{{ ressource.nom }}</dt>
