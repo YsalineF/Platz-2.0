@@ -49,7 +49,6 @@
          * Permet de fermer la fenêtre de résultats de la recherche lorsqu'on appuie en dehors de cette fenêtre
          * Code trouvé sur : https://stackoverflow.com/questions/36170425/detect-click-outside-element et légèrement modifié
          */
-        
         directives: {
             "click-outside": {
                 bind: function (el, binding) {

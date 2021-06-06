@@ -17,10 +17,12 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+// Broadcast le channel pour la discussion instantanée
 Broadcast::channel('conversation', function ($user) {
     return $user;
 });
 
+// Broadcast le channel pour l'ajout de commentaires
 Broadcast::channel('commentaire', function ($user) {
     return $user;
 });

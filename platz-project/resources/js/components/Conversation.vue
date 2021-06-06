@@ -38,36 +38,75 @@ export default {
   props: ["id"],
   data() {
     return {
+      /**
+       * Instancie à null un tableau et ses éléments
+       */
       messageForm: {
         'from_id': null,
         'to_id': null,
         'content': ""
       },
+      /**
+       * Instancie à vide un tableau
+       */
       messages: []
     }
   },
+
+  /**
+     * Permet de broadcast les nouveaux messages et ainsi les render instantanément
+     * 1. Le channel écoute l'événement "MessageSent"
+     * 2. On ajoute les nouveaux messages au tableau "message" (initialiser dans les data)
+     *
+     * @return  {[type]}  [return description]
+     */
   mounted() {
     Echo.channel('conversation')
       .listen('MessageSent', (event) => {
         this.messages.push(event.conversation)
-        console.log(this.messages)
+        // console.log(this.messages)
       })
   },
   computed: {
+    /**
+     * Retourne le user dont l'id correspond à l'id envoyé dans les props (l'id du user à qui on veut envoyer un message)
+     *
+     * @return  {[type]}  [retourne un user]
+     */
     user() {
       return this.$store.getters.getUserById(this.id)
     },
+    /**
+     * Retourne les messages que le user choisi et le user connecté se sont envoyés
+     *
+     * @return  {[type]}  [retourne des messages]
+     */
     conversations() {
-    console.log(this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id))
+      // console.log(this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id))
       return this.$store.getters.getConversationsById(this.id, this.$store.state.connectedUser.id)
     }
   },
   methods: {
+    /**
+       * Permet de formater une date
+       *
+       * @param   {[type]}  value  [la date]
+       *
+       * @return  {[type]}         [renvoie la date sous le nouveau format]
+       */
     dateFormat(value) {
       if(value) {
         return moment(String(value)).format('MMMM Do YYYY, h:mm a')
       }
     },
+
+    /**
+     * Permet d'ajouter un message 
+     * On instancie un objet FormData qu'on rempli avec l'élément du formulaire (qui a été rempli par le user)
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/conversations/add"
+     * et on remet la valeur de l'élément content du tableau à vide
+     * @return  {[type]}  [return description]
+     */
     addMessage() {
       this.messageForm.from_id = this.$store.state.connectedUser.id
       this.messageForm.to_id = this.id

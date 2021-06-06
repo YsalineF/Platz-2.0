@@ -80,12 +80,25 @@ export default {
     }
   },
   computed: {
+    /**
+     * Retourne le user connecté
+     * Récupère l'id du user connecté via le session storage
+     *
+     * @return  {[type]}  [return le user connecté]
+     */
    user() {
       let id = this.$store.state.connectedUser.id
       return this.$store.getters.getUserById(id)
    }
   },
   methods: {
+    /**
+       * Permet de formater une date
+       *
+       * @param   {[type]}  value  [la date]
+       *
+       * @return  {[type]}         [renvoie la date sous le nouveau format]
+       */
     dateFormat(value) {
       if(value) {
         return moment(String(value)).format('MMM DD, YYYY')

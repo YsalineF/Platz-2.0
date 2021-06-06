@@ -39,7 +39,9 @@
 export default {
   data() {
     return {
-      // Instancie le tableau editForm avec des éléments null
+      /**
+       * Instancie le tableau "editForm" avec des éléments null
+       */
       editForm: {
         id: null,
         nom: '',
@@ -48,29 +50,51 @@ export default {
         categorie: '',
         user: ''
       },
+      /**
+       * Instancie "imagePreview" à null et "showPreview" à false
+       */
       imagePreview: null,
       showPreview: false,
     }
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [retourne toutes les catégories]
+     */
     categories() {
-      // Retourne les categories 
       return this.$store.getters.getCategories
     },
+    /**
+     * Retourne la ressource dont l'id correspond à celle présente dans l'URL
+     *
+     * @return  {[type]}  [retourne une ressource]
+     */
     ressource() {
-      // Récupère l'id de la ressource qui se trouve dans l'url
       let id = this.$route.params.id
       return this.$store.getters.getRessourceById(id)
     },
+    /**
+     * Retourne la catégorie de la ressource actuelle
+     *
+     * @return  {[type]}  [retourne la catégorie de la ressource actuelle]
+     */
     categorie() {
       return function(ressource) {
-        // Retourne la categorie qui correspond à la ressource actuelle
         return this.$store.getters.getCategoriesByRessourceId(ressource)
       }
     }
   },
   methods: {
-    // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak
+    /**
+     * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+     * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+     * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+     * @param   {[type]}  event  [event description]
+     *
+     * @return  {[type]}         [return description]
+     */
     imageChange(event){
       this.editForm.image = event.target.files[0];
 
@@ -85,8 +109,14 @@ export default {
         }
       }
     },
-    // Permet d'editer la ressource choisie
-    // On instancie un objet FormData qu'on rempli avec les éléments actuels de la ressource (voir created())
+    
+    /**
+     * Permet d'éditer la ressource choisie
+     * On instancie un objet FormData qu'on rempli avec les éléments actuels de la ressource (voir "created()")
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/edit"
+     * et on est redirigé vers la page d'accueil
+     * @return  {[type]}  [return description]
+     */
     editRessource() {
       this.editForm.user = this.$store.state.connectedUser.id
       let editForm = new FormData();
@@ -100,7 +130,12 @@ export default {
       this.$router.push("/")
     }
   },
-  // Rempli le tableau "editForm" avec les éléments actuels de la ressource au chargement de la page
+
+  /**
+   * Remplit le tableau "editForm" (instancier à vide dans les data) avec les éléments actuels de la ressource au chargement de la page
+   *
+   * @return  {[type]}  [return description]
+   */
   created() {
     this.editForm.nom = this.ressource.nom
     this.editForm.description = this.ressource.description
