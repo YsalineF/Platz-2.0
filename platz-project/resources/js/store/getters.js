@@ -44,6 +44,13 @@ let getters = {
     }
   },
 
+  // Retoure le user selon l'élément id du user
+  getUserById(state) {
+    return function(id) {
+      return state.users.find(user => user.id == id)
+    }
+  },
+
   /* ---------------------- COMMENTAIRES ------------------*/
   // Retourne tous les commentaires
   getCommentaires(state){
