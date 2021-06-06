@@ -62,16 +62,27 @@
         <!-- {{commentaires}} -->
         <div class="post-reply" v-for="commentaire in commentaires" :key="commentaire.id">
             <div class="image-reply-post">
-              <img :src="`assets/img/${user(commentaire).avatar}`" :alt="user(commentaire).name" />
+              <img v-if="user(commentaire).image" :src="`assets/img/${user(commentaire).image}`" :alt="user(commentaire).name" />
+              <img v-else src="assets/img/avatar.png" :alt="user(commentaire).name" />
             </div>
-
             <div class="name-reply-post">
               <span class="">
                  {{ user(commentaire).name }}
               </span>
             </div>
-
-
+            <div class="text-reply-post">{{ commentaire.content }}</div>
+        </div>
+        <!-- Nouveau commentaire -->
+        <div class="post-reply" v-for="commentaire in newCommentaires" :key="commentaire.id">
+            <div class="image-reply-post">
+              <img v-if="user(commentaire).image" :src="`assets/img/${user(commentaire).image}`" :alt="user(commentaire).name" />
+              <img v-else src="assets/img/avatar.png" :alt="user(commentaire).name" />
+            </div>
+            <div class="name-reply-post">
+              <span class="">
+                 {{ user(commentaire).name }}
+              </span>
+            </div>
             <div class="text-reply-post">{{ commentaire.content }}</div>
         </div>
 
@@ -106,8 +117,15 @@
           comment: '',
           ressource: '',
           user: ''
-        }
+        },
+        newCommentaires: []
       }
+    },
+    mounted() {
+      Echo.channel('commentaire')
+        .listen('CommentAdded', (event) => {
+          this.newCommentaires.push(event.commentaire)
+        })
     },
     methods: {
       dateFormat(value) {
