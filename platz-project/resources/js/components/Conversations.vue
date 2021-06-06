@@ -21,11 +21,19 @@ export default {
     }
   },
   computed: {
-    // Permet d'avoir la liste des utilisateurs enregistrés sur le site
+    /**
+     * Retourne la liste des users enregistrés sur le site
+     *
+     * @return  {[type]}  [retourne tous les users]
+     */
     users() {
       return this.$store.getters.getUsers
     },
-    // Permet de filtrer la liste des utilisateurs pour exclure l'utilisateur connecté
+    /**
+     * Retourne la liste des users filtrée, c'est-à-dire sans le user connecté
+     *
+     * @return  {[type]}  [retourne la liste des users sans le user connecté]
+     */
     filteredUsers() {
       return this.users.filter(user => user.id != this.$store.state.connectedUser.id)
     }

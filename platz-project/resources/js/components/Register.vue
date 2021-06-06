@@ -35,17 +35,23 @@ export default {
   },
   methods: {
     // Permet au user de se register
+    /**
+     * Permet au user de se register
+     * 1. Mise en place de cookie pour une certaine durée (1 heure) (ligne 50)
+     * 2. Accède à la route pour s'enregistrer via les infos communiquées via le formulaire (ligne 52)
+     * 3. Transforme les data du user connecté en un objet JSON (ligne 55)
+     * 4. Afin de stocker le user connecté dans le session storage (voir inspecteur > application > session storage) (ligne 57)
+     * 5. Renvoie vers la route "index" donc vers la page d'accueil (ligne 60)
+     * 
+     *
+     * @return  {[type]}  [return description]
+     */
     login() {
-      // Mise en place de cookie pour une certaine durée (ici: 1heure)
       axios.get('sanctum/csrf-cookie').then(response => {
-        // Accede a la route pour s'enregister via les infos communiquees via le formulaire
         axios.post('api/auth/register', this.registerForm).then(response => {
           this.$store.dispatch('loginUser', response.data.user)
-          // Transforme les data du user connecté en un objet JSON
           let connected = JSON.stringify(response.data.user)
-          // Afin de le stocker dans le session storage (voir inspecteur > application > session storage)
           sessionStorage.setItem('connected', connected)
-          // renvoie vers la route "index" donc vers la page d'accueil
           this.$router.push({name: "index"})
         })
       })

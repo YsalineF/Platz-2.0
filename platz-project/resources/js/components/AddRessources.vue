@@ -38,6 +38,9 @@
 export default {
   data() {
     return {
+      /**
+       * Instancie un tableau avec ses éléments à null
+      */
       addForm: {
         nom: '',
         description: '',
@@ -46,19 +49,32 @@ export default {
         user: '',
         size: 0
       },
+      /**
+       * Instancie "imagePreview" à null et "showPreview" à false
+       */
       imagePreview: null,
       showPreview: false,
     }
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [retourne toutes les catégories]
+     */
     categories() {
-      // Retourne les categories 
       return this.$store.getters.getCategories
     }
   },
   methods: {
-    // Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
-    // https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+    /**
+     * Permet de preview l'image ajouté par le user et de l'ajouter au tableau
+     * Inspiration https://www.youtube.com/watch?v=VqnJwh6E9ak & https://stackoverflow.com/questions/47650154/how-do-i-upload-image-in-vuejs/58231597
+     * https://stackoverflow.com/questions/29732756/how-to-validate-image-file-extension-with-regular-expression-using-javascript/29732854
+     * @param   {[type]}  event  [event description]
+     *
+     * @return  {[type]}         [return description]
+     */
     imageChange(event){
       this.addForm.image = event.target.files[0];
 
@@ -74,6 +90,14 @@ export default {
         }
       }
     },
+    
+    /**
+     * Permet d'ajouter une ressource 
+     * On instancie un objet FormData qu'on rempli avec les éléments du formulaire (qui a été rempli par le user)
+     * Lorsque le nouveau tableau a été rempli avec les informations, on utilise la route axios "api/add"
+     * et on est redirigé vers la page d'accueil
+     * @return  {[type]}  [return description]
+     */
     addResource(){
       this.addForm.user = this.$store.state.connectedUser.id;
 

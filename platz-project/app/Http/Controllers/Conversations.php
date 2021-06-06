@@ -16,7 +16,8 @@ class Conversations extends Controller
     }
 
     /**
-     * Fonction qui permet d'enregistrer un nouveau message dans la base de données
+     * Fonction qui permet d'enregistrer un nouveau message dans la base de données.
+     * En cas de succès, envoi d'un statut 200 et d'un message confirmant l'envoi du message (conversation) dans le Network (Inspecteur)
      *
      * @param   Request  $request  [$request description]
      *

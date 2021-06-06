@@ -72,5 +72,4 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
   Route::get('/conversations', [Conversations::class, 'index']);
   // Ajout d'un message à la conversation (système de messagerie)
   Route::post('/conversations/add', [Conversations::class, 'addMessage']);
-  // Route::resource('/conversations', Conversations::class)->except(['show', 'create', 'edit']);
 });

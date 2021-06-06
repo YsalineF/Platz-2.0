@@ -36,26 +36,41 @@
 export default {
   data() {
     return {
+      /**
+       * Initialise à null id
+       */
       params: {
         id: ''
       }
     }
   },
   computed: {
+    /**
+     * Retourne toutes les catégories
+     *
+     * @return  {[type]}  [return les catégories]
+     */
     categories() {
-      // Retourne toutes les categories
       return this.$store.getters.getCategories;
     },
-    // Retourne l'id de la ressource actuelle et permet d'avoir acces au bouton
-    // pour accéder au formulaire d'edit de la ressource
+    /**
+     * Retourne l'id de la ressource actuelle, trouvée via l'url, et permet d'avoir accès au bouton pour accèder au formulaire d'édition de la ressource
+     *
+     * @return  {[type]}  [return l'id de la ressource actuelle]
+     */
     ressourceId() {
       let ressourceId = this.$route.params.id
       return ressourceId
     }
   },
   methods: {
-    // Permet de supprimer la ressource sur laquelle on se trouve
-    // la suppression se fait via son id
+    /**
+     * Permet de supprimer la ressource actuelle
+     * La suppression se fait via l'id de la ressource, transmise via la data ressourceId
+     * On utilise la route axios "api/delete" et on est redirigé sur la page d'accueil
+     *
+     * @return  {[type]}  [return description]
+     */
     deleteRessource() {
       this.params.id = this.ressourceId
       axios.post('api/delete', this.params)

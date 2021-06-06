@@ -53,6 +53,13 @@ export default {
       connection: "null"
     }
   },
+  /**
+   * Mise en place d'un simple websocket.
+   * A la création de la page, une connexion au serveur websocket est établie et un message dans le console s'affiche pour confirmer le début de la connexion
+   * et le fait qu'on est bien connecté au serveur websocket
+   *
+   * @return  {[type]}  [return description]
+   */
   created() {
       console.log("Starting connection to websocket server")
       this.connection = new WebSocket("wss://echo.websocket.org")
@@ -67,19 +74,31 @@ export default {
       }
     },
   computed: {
+    /**
+     * Retourne toutes les catégories 
+     *
+     * @return  {[type]}  [retourne des ressoures]
+     */
     ressources() {
+      // On récupère l'id de la catégorie de l'id dans l'URL (dans le cas où un filtre est appliqué)
       let idCat = this.$route.params.id;
 
+      // Si l'id de la catégorie est différent à undefined, cela veut dire qu'un filtre est appliqué
       if (typeof idCat !== 'undefined'){
+        // Retourne les ressources qui ont la catégorie concernée par le filtre
         return this.$store.getters.getRessourcesByCategorieId(this.$route.params.id);
       }
 
-      // Retourne un certain nombre de ressources (le nombre dépend des params)
+      // Si aucun filtre est appliqué, retourne un certain nombre de ressources (le nombre dépend des params)
       return this.$store.getters.getRessources(this.params)
     },
+    /**
+     * Retourne la catégorie de la ressource choisie
+     *
+     * @return  {[type]}  [retourne la catégorie de la ressource choisie]
+     */
     categories() {
       return function(ressource) {
-        // Retourne la catégorie de la ressource choisie
         return this.$store.getters.getCategoriesByRessourceId(ressource)
       }
     },

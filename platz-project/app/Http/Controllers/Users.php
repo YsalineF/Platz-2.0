@@ -7,16 +7,21 @@ use App\Models\User;
 
 class Users extends Controller
 {
+    /**
+     * Fonction qui permet d'avoir toutes les Users sous la forme JSON
+     *
+     * @return  [type]  [renvoie les Users sous la forme JSON]
+     */
     public function index() {
       return response()->json(User::all());
     }
 
     /**
-     * [editPseudo fonction qui permet l'édition du pseudo de l'utilisateur connecté]
+     * Fonction qui permet l'édition du pseudo de l'utilisateur connecté
      *
      * @param   Request  $request  [$request description]
      *
-     * @return  [type]             [return description]
+     * @return  [type]             [renvoie un JSON content un statut (200) et un message confirmant l'édition du user]
      */
     public function edit(Request $request) {
       $user = User::find($request->id);
