@@ -10,6 +10,7 @@ import Login from './components/Login'
 import Register from './components/Register'
 import AddRessources from './components/AddRessources'
 import EditRessources from './components/EditRessources'
+import Profile from './components/Profile'
 
 
 // Création du routing
@@ -50,6 +51,11 @@ export default new Router({
       path: '/edit/:id',
       name: 'edit',
       component: EditRessources
+    },
+    {
+      path: '/my-profile',
+      name: 'profile',
+      component: Profile
     }
   ]
 })
