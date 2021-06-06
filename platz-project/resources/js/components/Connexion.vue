@@ -4,6 +4,9 @@
       <button class="button-myprofile" type="button" name="myprofile">
        <router-link to="/my-profile">My profile</router-link>
      </button>
+     <button class="button-conversations" type="button" name="conversations">
+       <router-link to="/conversations">Conversations</router-link>
+     </button>
       <button class="button-logout" type="button" name="button" @click="logout">
        Logout
      </button>
@@ -40,10 +43,10 @@ export default {
 
 <style lang="css" scoped>
 .button-logout {
-  margin-right: 65px;
+  margin-right: 10px;
   cursor: pointer;
 }
-.button-login, .button-register, .button-logout, .button-myprofile {
+.button-login, .button-register, .button-logout, .button-myprofile, .button-conversations {
   display: block;
   font-family: Helvetica, sans-serif;
   float: right;
@@ -53,6 +56,9 @@ export default {
   margin-top: 15px;
   border: none;
   border-radius: 5px;
+}
+.button-conversations {
+  margin-right: 10px;
 }
 .button-login, .button-myprofile {
   margin-right: 65px;

@@ -13,6 +13,8 @@ import EditRessources from './components/EditRessources'
 import Profile from './components/Profile'
 import EditProfile from './components/EditProfile'
 import UserShow from './components/users/Show'
+import Conversations from './components/Conversations'
+import Conversation from './components/Conversation'
 
 // Création du routing
 Vue.use(Router)
@@ -67,6 +69,19 @@ export default new Router({
       path: '/users/:id',
       name: 'userShow',
       component: UserShow
+    },
+    {
+      path: '/conversations',
+      name: 'Conversations',
+      component: Conversations,
+      children: [
+        {
+          path: ':id',
+          name: 'Conversation',
+          props: true,
+          component: Conversation
+        }
+      ]
     }
   ]
 })

@@ -3,6 +3,7 @@ let state = {
   categories: [],
   users: [],
   commentaires: [],
+  conversations: [],
   connectedUser: null
 }
 

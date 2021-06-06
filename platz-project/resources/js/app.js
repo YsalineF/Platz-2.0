@@ -44,6 +44,7 @@ const app = new Vue({
       this.$store.dispatch('setCategories')
       this.$store.dispatch('setUsers')
       this.$store.dispatch('setCommentaires')
+      this.$store.dispatch('setConversations')
       // Inspîration : https://stackoverflow.com/questions/51892979/how-to-stay-logged-in-even-after-page-refresh-with-vuex
       // Vérifie si un item "connected" existe dans le sessionStorage (à check dans inspecteur >network > session storage)
       if(sessionStorage.getItem('connected')) {
