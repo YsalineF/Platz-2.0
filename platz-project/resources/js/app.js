@@ -28,6 +28,7 @@ Vue.component('menu-categories', require('./components/Menu.vue').default);
 Vue.component('logo', require('./components/Logo.vue').default);
 Vue.component('menu-filter', require('./components/MenuFilter.vue').default);
 Vue.component('connexion', require('./components/Connexion.vue').default);
+Vue.component('search-bar', require('./components/SearchBar.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
