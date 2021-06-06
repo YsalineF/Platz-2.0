@@ -27,6 +27,14 @@ let actions = {
   },
   addComment({commit}, data) {
     commit('ADD_COMMENT', data)
+  },
+  setConversations({commit}) {
+    // Transaction AJAX
+    axios.get('api/conversations')
+          .then(responsePHP => commit('SET_CONVERSATIONS', responsePHP.data))
+  },
+  addMessage({commit}, data) {
+    commit('ADD_MESSAGE', data)
   }
 }
 
