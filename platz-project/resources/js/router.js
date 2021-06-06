@@ -12,7 +12,7 @@ import AddRessources from './components/AddRessources'
 import EditRessources from './components/EditRessources'
 import Profile from './components/Profile'
 import EditProfile from './components/EditProfile'
-
+import UserShow from './components/users/Show'
 
 // Création du routing
 Vue.use(Router)
@@ -25,7 +25,7 @@ export default new Router({
     },
     {
       path: '/ressources/:id',
-      name: 'show',
+      name: 'ressourceShow',
       component: RessourceShow
     },
     {
@@ -62,6 +62,11 @@ export default new Router({
       path: '/my-profile/edit',
       name: 'profile.edit',
       component: EditProfile
+    },
+    {
+      path: '/users/:id',
+      name: 'userShow',
+      component: UserShow
     }
   ]
 })
