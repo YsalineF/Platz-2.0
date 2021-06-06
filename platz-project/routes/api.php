@@ -58,4 +58,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
   Route::post('/delete', [Ressources::class, 'delete']);
   // Ajout d'un commentaire
   Route::post('/commentaires/add', [Commentaires::class, 'add']);
+  // Edition du pseudo d'un utilisateur connecté
+  Route::post('/my-profile/edit', [Users::class, 'edit']);
 });
