@@ -82,8 +82,6 @@ export default {
   computed: {
    user() {
       let id = this.$store.state.connectedUser.id
-      // console.log(this.$store.state.connectedUser.id)
-      console.log(this.$store.getters.getUserById(id))
       return this.$store.getters.getUserById(id)
    }
   },
